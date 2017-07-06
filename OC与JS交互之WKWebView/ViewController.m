@@ -36,8 +36,8 @@
     [userCC addScriptMessageHandler:self name:@"showName"];
     [userCC addScriptMessageHandler:self name:@"showSendMsg"];
     //MARK:向网页中注入JS脚本例如，参数/函数等
-    WKUserScript *script = [[WKUserScript alloc] initWithSource:@"var application_name=123213;" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
-    [userCC addUserScript:script];
+//    WKUserScript *script = [[WKUserScript alloc] initWithSource:@"var application_name=123213;" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+//    [userCC addUserScript:script];
 }
 
 
@@ -46,7 +46,7 @@
 - (IBAction)btnClick:(UIButton *)sender {
     if (!self.wkWebView.loading) {
         if (sender.tag == 123) {
-            [self.wkWebView evaluateJavaScript:@"alertMobile()" completionHandler:^(id _Nullable response, NSError * _Nullable error) {
+            [self.wkWebView evaluateJavaScript:@"var application_name='呃呃呃'; alertMobile()" completionHandler:^(id _Nullable response, NSError * _Nullable error) {
                 //TODO
                 NSLog(@"%@ %@",response,error);
             }];
