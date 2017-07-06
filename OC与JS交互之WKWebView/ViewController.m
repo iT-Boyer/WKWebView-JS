@@ -31,16 +31,18 @@
     [self.wkWebView loadHTMLString:[NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil] baseURL:baseURL];
     
     WKUserContentController *userCC = config.userContentController;
-    //JS调用OC 添加处理脚本
+    //MARK:在OC中添加监听的接口清单：JS脚本的接口名
     [userCC addScriptMessageHandler:self name:@"showMobile"];
     [userCC addScriptMessageHandler:self name:@"showName"];
     [userCC addScriptMessageHandler:self name:@"showSendMsg"];
+    //MARK:向网页中注入JS脚本例如，参数/函数等
+    WKUserScript *script = [[WKUserScript alloc] initWithSource:@"var application_name=123213;" injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+    [userCC addUserScript:script];
 }
 
 
-
+#pragma mark - evaluateJavaScript调用JS脚本
 //网页加载完成之后调用JS代码才会执行，因为这个时候html页面已经注入到webView中并且可以响应到对应方法
-
 - (IBAction)btnClick:(UIButton *)sender {
     if (!self.wkWebView.loading) {
         if (sender.tag == 123) {
@@ -63,21 +65,27 @@
     }
 }
 
-#pragma mark - WKScriptMessageHandler
+//MARK: 调用JS的clear()函数
+- (IBAction)clear:(id)sender {
+    [self.wkWebView evaluateJavaScript:@"clear()" completionHandler:nil];
+}
+
+#pragma mark - WKScriptMessageHandler 处理拦截到的JS接口名
 
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
     NSLog(@"%@",NSStringFromSelector(_cmd));
     NSLog(@"%@",message.body);
-
+    //MARK: 空参数
     if ([message.name isEqualToString:@"showMobile"]) {
         [self showMsg:@"我是下面的小红 手机号是:18870707070"];
     }
     
+    //MARK: 一个参数
     if ([message.name isEqualToString:@"showName"]) {
         NSString *info = [NSString stringWithFormat:@"你好 %@, 很高兴见到你",message.body];
         [self showMsg:info];
     }
-    
+    //MARK: 多个参数
     if ([message.name isEqualToString:@"showSendMsg"]) {
         NSArray *array = message.body;
         NSString *info = [NSString stringWithFormat:@"这是我的手机号: %@, %@ !!",array.firstObject,array.lastObject];
@@ -85,13 +93,9 @@
     }
 }
 
+
 - (void)showMsg:(NSString *)msg {
     [[[UIAlertView alloc] initWithTitle:nil message:msg delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil] show];
 }
-
-- (IBAction)clear:(id)sender {
-    [self.wkWebView evaluateJavaScript:@"clear()" completionHandler:nil];
-}
-
 
 @end
