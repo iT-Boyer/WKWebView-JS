@@ -39,9 +39,8 @@ window.webkit.messageHandlers.showSendMsg.postMessage(['13300001111', 'Go Climbi
 ### iOS原生API调用JS脚本
 在网页加载完成之后调用JS代码才会执行，因为这个时候html页面已经注入到webView中并且可以响应到对应方法。<br/>
 例如调用JS函数`alertMobile()`：
-```
-[self.wkWebView evaluateJavaScript:@"alertMobile()"
-                 completionHandler:^(id _Nullable response, NSError * _Nullable error) {
+```objc
+[self.wkWebView evaluateJavaScript:@"alertMobile()" completionHandler:^(id _Nullable response, NSError * _Nullable error) {
                 //TODO
                 NSLog(@"%@ %@",response,error);
 }];
@@ -49,8 +48,8 @@ window.webkit.messageHandlers.showSendMsg.postMessage(['13300001111', 'Go Climbi
 
 #### 在OC中为JS定义属性/函数
 
-当注入的类型字符串类型时，必须用`''`括起来。<br/>
-OC注入的参数为全局属性，在html中的JS脚本可以直接调用属性名来获取值。<br/>
+* 当注入的类型字符串类型时，必须用`''`括起来。<br/>
+* OC注入的参数为全局属性，在html中的JS脚本可以直接调用属性名来获取值。<br/>
 
 通过NSString形式，编写JS脚本，通过以下两种方式注入网页
 
@@ -58,22 +57,20 @@ OC注入的参数为全局属性，在html中的JS脚本可以直接调用属性
 ```objc
 //MARK:向网页中注入JS脚本例如，参数/函数等
 WKUserScript *script = [[WKUserScript alloc] initWithSource:@"var number=0;"
-                                                    injectionTime:WKUserScriptInjectionTimeAtDocumentStart
-                                            forMainFrameOnly:YES];
+                                                injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                                        forMainFrameOnly:YES];
 WKUserContentController *userCC = config.userContentController;
 [userCC addUserScript:script];
 ```
 方式二：使用WKWebView实例方法`evaluateJavaScript`动态注入JS脚本
 
 ```objc
-[self.wkWebView evaluateJavaScript:@"var number=0;"
-                 completionHandler:nil];
+[self.wkWebView evaluateJavaScript:@"var number=0;" completionHandler:nil];
 ```
 #### iOS原生API调用JS函数
 使用WKWebView实例方法`evaluateJavaScript`动态调用JS函数
-```
-[self.wkWebView evaluateJavaScript:@"alertSendMsg('18870707070','下午好！')"
-                 completionHandler:nil];
+```objc
+[self.wkWebView evaluateJavaScript:@"alertSendMsg('18870707070','下午好！')" completionHandler:nil];
 ```
 
 
