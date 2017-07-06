@@ -11,7 +11,9 @@ WKUserContentController *userCC = config.userContentController;
 ```
 #### JS脚本接口
 js接口声明格式：
-`window.webkit.messageHandlers.接口名.postMessage(参数)`
+```
+window.webkit.messageHandlers.接口名.postMessage(参数)
+```
 接口名: 在WKWebView中，当JS执行该接口时，OC会拦截预先监听的接口，并处理相关事件。
 
 参数：object类型，多个参数时需要封装为集合类型来实现多参传递。
